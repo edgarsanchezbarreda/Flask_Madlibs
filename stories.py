@@ -1,6 +1,11 @@
 from flask import Flask, request, render_template
+from flask_debugtoolbar import DebugToolbar
+
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'helloworld'
+
+debug = DebugToolbar(app)
 
 
 
@@ -29,4 +34,15 @@ story = Story(
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    prompts = story.prompts
+
+    return render_template('home.html', prompts=prompts)
+
+@app.route('/story')
+def story():
+    place = request.args['place']
+    noun = request.args['noun']
+    verb = request.args['verb']
+    adjective = request.args['adjective']
+    plural_noun = request.args['plural_noun']
+    return render_template('story.html')
