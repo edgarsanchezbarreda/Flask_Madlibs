@@ -1,24 +1,11 @@
-from flask import Flask, request, render_template
-from flask_debugtoolbar import DebugToolbar
-
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'helloworld'
-
-debug = DebugToolbar(app)
-
-
-
 class Story:
-    def __init__(self, words, text):
-        """Create story with words and template text."""
-
+    def __init__(self, code, title, words, text):
+        self.code = code
+        self.title = title
         self.prompts = words
         self.template = text
 
     def generate(self, answers):
-        """Substitute answers into text."""
-
         text = self.template
 
         for (key, val) in answers.items():
@@ -27,22 +14,19 @@ class Story:
         return text
 
 
-story = Story(
+story1 = Story(
+    "history",
+    "A History Tale",
     ["place", "noun", "verb", "adjective", "plural_noun"],
-    """Once upon a time in a long-ago {place}, there lived a large {adjective} {noun}. It loved to {verb} {plural_noun}."""
+    """Once upon a time in a long-ago {place}, there lived a
+       large {adjective} {noun}. It loved to {verb} {plural_noun}."""
 )
 
-@app.route('/')
-def home():
-    prompts = story.prompts
+story2 = Story(
+    "omg",
+    "An Excited Adventure",
+    ["noun", "verb"],
+    """OMG!! OMG!! I love to {verb} a {noun}!"""
+)
 
-    return render_template('home.html', prompts=prompts)
-
-@app.route('/story')
-def story():
-    place = request.args['place']
-    noun = request.args['noun']
-    verb = request.args['verb']
-    adjective = request.args['adjective']
-    plural_noun = request.args['plural_noun']
-    return render_template('story.html')
+stories = {s.code: s for s in [story1, story2]}
